@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Feliz Aniversario Nico</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Sans:wght@300;400;500&display=swap');
+
+@property --x0 {syntax: "<number>";initial-value: 0;inherits: true}
+@property --x1 {syntax: "<number>";initial-value: 0;inherits: true}
+@property --y0 {syntax: "<number>";initial-value: 1;inherits: true}
+@property --y1 {syntax: "<number>";initial-value: 1;inherits: true}
+@property --p  {syntax: "<integer>";initial-value: 1;inherits: true}
+
+html {
+  --b: 50px; --s: 80px; --t: 20px; --nc: 2153;
+  animation: --y0 linear both, --x0 linear both;
+  animation-timeline: scroll(y self), scroll(x self);
+  --_i: calc(round(var(--x0)*(100vw - var(--b)),var(--b))/var(--b));
+  background: url(https://assets.codepen.io/1480814/bgmario.png?v=1) 0 100%/calc(11*var(--b)) repeat-x fixed #5c94fc;
+  container-type: scroll-state;
+  font-family: 'Press Start 2P', monospace;
+  scrollbar-width: none;
+  overflow: scroll;
+}
+html::-webkit-scrollbar { display: none; }
+@keyframes --y0 {to {--y0: var(--nc)}}
+@keyframes --x0 {to {--x0: 1}}
+
+body {
+  display: grid;
+  height: calc(100vh + calc(var(--nc)*40px));
+  width: 500vw;
+  margin: 0;
+  touch-action: none;
+}
+
+body:before {
+  content:"";
+  width: var(--b);
+  aspect-ratio: 2/3;
+  background: url(https://assets.codepen.io/1480814/mario-a.png) 0/auto 100% no-repeat;
+  margin-top: auto;
+  position: sticky;
+  bottom: calc(2*var(--b));
+  left: 0;
+  transition: --y1 .4s, --x1 0s .3s;
+  --y1: var(--y0); --x1: var(--x0);
+  --j: min(abs(var(--y0) - var(--y1)),1);
+  --i: calc(min(abs(var(--x0) - var(--x1))*9e9,1) + var(--j)*9e9);
+  translate: calc((100vw - var(--b))*var(--x0)) calc(-1*var(--j)*var(--s));
+  animation: m .4s steps(2,jump-none) infinite;
+  scale: sign(var(--x0) - var(--x1) + .001) 1;
+  @container scroll-state(scrolled: left) {scale: -1 1;}
+}
+@keyframes m {
+  0% {background-position: max(var(--i)*100%/3,100%) 0}
+  to {background-position: max(var(--i)*200%/3,100%) 0}
+}
+
+wall, coin { position: absolute; }
+:is(wall,coin):after, coin:before {
+  content: "";
+  position: fixed;
+  bottom: calc(3.5*var(--b));
+  height: var(--b);
+  aspect-ratio: 1;
+  --p: attr(p type(<integer>));
+  --y1: var(--y0);
+  --j: min(abs(var(--y0) - var(--y1)),1);
+  left: calc(var(--p)*var(--b));
+  background: url(https://assets.codepen.io/1480814/block.png) 50%/auto 100% no-repeat;
+  transition: --y1 .4s;
+  translate: if(style(--p: var(--_i)): 0 min(-1*var(--j)*var(--s),var(--t) - var(--s));else: 0 min(var(--t) - var(--s)););
+}
+coin:after { background-position: 100%; }
+coin:before {
+  background: url(https://assets.codepen.io/1480814/ccc.png) 0 50%/600% auto no-repeat;
+  animation: c .5s steps(6,jump-none) infinite;
+  scale: .6; transition: --y1 1s;
+  translate: if(style(--p: var(--_i)): 0 min(-2*var(--j)*var(--s),var(--t) - var(--s));else: 0 min(var(--t) - var(--s)););
+}
+@keyframes c {to {background-position-x: 100%}}
+
+html:not(:has(:focus-within)):after {
+  content:"👆 Tocá para comenzar";
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  font-size: clamp(20px, 5vw, 40px);
+  text-align: center; padding: 20px;
+  pointer-events: none;
+  background: rgb(255 255 255/.5);
+  z-index: 100;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html:before {
+    content: "← → moverse\A ↓ saltar";
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 400;
+    letter-spacing: 0.04em; line-height: 2;
+    white-space: pre; position: fixed;
+    bottom: 20px; left: 0;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    border-right: 1px solid rgba(0,0,0,0.08);
+    color: #222; z-index: 50;
+  }
+}
+
+body:after {
+  content: "Feliz Aniversario Nico 🍄";
+  position: fixed;
+  top: clamp(10px, 4vh, 50px); left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap; color: #ffccc5;
+  font-size: clamp(11px, 3vw, 28px);
+  text-shadow: 3px 3px #000;
+  padding: clamp(8px, 2vw, 20px) clamp(12px, 3vw, 30px);
+  background: #994e00; border: 3px solid #000;
+  z-index: 50;
+}
+
+@supports not (animation-range: 0 100%) {
+  html:after {
+    content:"Usá Chrome para jugar" !important;
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    font-size: clamp(20px, 5vw, 40px);
+    text-align: center; padding: 20px;
+    pointer-events: none;
+    background: #fff !important; z-index: 999;
+  }
+}
+
+#controls {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 120px; display: flex;
+  align-items: center; justify-content: space-between;
+  padding: 16px 24px; z-index: 200;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.3) 60%, transparent);
+}
+.ctrl-group { display: flex; gap: 12px; pointer-events: all; }
+.ctrl-btn {
+  width: 68px; height: 68px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.75);
+  background: rgba(0,0,0,0.5); color: #fff;
+  font-size: 28px; display: flex;
+  align-items: center; justify-content: center;
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+  touch-action: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  transition: background 0.08s, transform 0.08s;
+}
+.ctrl-btn.pressed { background: rgba(255,255,255,0.28); transform: scale(0.9); }
+
+/* Meta — siempre visible a la derecha */
+#finish-pole {
+  position: fixed;
+  top: 0; bottom: 0;
+  right: 0;
+  width: 8px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #fff 0px, #fff 20px,
+    #111 20px, #111 40px
+  );
+  z-index: 10;
+  pointer-events: none;
+  transition: box-shadow 0.3s;
+}
+#finish-pole.near {
+  box-shadow: 0 0 12px 4px rgba(255,255,100,0.7);
+}
+#finish-flag {
+  position: fixed;
+  top: 60px;
+  right: 8px;
+  font-size: 36px;
+  z-index: 11;
+  pointer-events: none;
+  animation: flagwave 1s ease-in-out infinite alternate;
+  transform-origin: right center;
+}
+@keyframes flagwave {
+  from { rotate: -4deg; }
+  to   { rotate:  6deg; }
+}
+/* Indicador de distancia a la meta */
+#meta-progress {
+  position: fixed;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: rgba(255,255,255,0.6);
+  z-index: 12;
+  pointer-events: none;
+  text-shadow: 1px 1px #000;
+  letter-spacing: 2px;
+}
+
+/* Victoria */
+#win-screen {
+  display: none;
+  position: fixed; inset: 0; z-index: 500;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  background: rgba(0,0,0,0);
+  transition: background 0.6s ease;
+}
+#win-screen.show { display: flex; }
+#win-screen.visible { background: rgba(0,0,0,0.75); }
+#win-box {
+  background: #994e00;
+  border: 6px solid #000;
+  box-shadow: 6px 6px 0 #000;
+  padding: clamp(24px,5vw,48px) clamp(28px,6vw,64px);
+  text-align: center; color: #ffccc5;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(10px,2.5vw,22px);
+  text-shadow: 3px 3px #000;
+  line-height: 2.2;
+  transform: scale(0.2); opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.4), opacity 0.4s ease;
+}
+#win-screen.visible #win-box { transform: scale(1); opacity: 1; }
+.win-stars {
+  font-size: clamp(32px,7vw,56px);
+  display: block; margin-bottom: 12px;
+  animation: starPulse 1s ease-in-out infinite alternate;
+}
+@keyframes starPulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.15); filter: brightness(1.3); }
+}
+.win-title {
+  display: block; margin-bottom: 8px;
+  font-size: clamp(12px,3vw,26px);
+  color: #ffe080; text-shadow: 3px 3px #7a3000;
+}
+.win-sub {
+  display: block; font-size: clamp(8px,1.8vw,16px);
+  color: #ffccc5; margin-top: 16px; opacity: 0.7;
+}
+#win-confetti {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 499;
+}
+</style>
+</head>
+<body tabindex="0">
+  <wall p="3"></wall><coin p="4"></coin><wall p="5"></wall>
+  <coin p="10"></coin><wall p="11"></wall><wall p="12"></wall>
+  <wall p="13"></wall><coin p="14"></coin><coin p="17"></coin>
+  <coin p="21"></coin><wall p="25"></wall><coin p="26"></coin>
+  <wall p="27"></wall><wall p="28"></wall><wall p="29"></wall>
+  <wall p="30"></wall><wall p="31"></wall>
+
+  <div id="controls">
+    <div class="ctrl-group">
+      <div class="ctrl-btn" id="btnLeft">◀</div>
+      <div class="ctrl-btn" id="btnRight">▶</div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-btn" id="btnJump">▼</div>
+    </div>
+  </div>
+
+  <!-- Meta fija: siempre a la derecha -->
+  <div id="finish-pole"></div>
+  <div id="finish-flag">🚩</div>
+  <div id="meta-progress">META →</div>
+
+  <canvas id="win-confetti"></canvas>
+  <div id="win-screen">
+    <div id="win-box">
+      <span class="win-stars">⭐ ⭐ ⭐</span>
+      <span class="win-title">¡Felicidades, ganaste!</span>
+      🍄 &nbsp; ❤️ &nbsp; 🌟
+      <span class="win-sub">tocá para continuar</span>
+    </div>
+  </div>
+
+  <script>
+    document.body.focus();
+
+    const html = document.documentElement;
+    const TICK = 55, STEP_Y = 2000;
+    const STEP_X = () => Math.round(html.clientWidth * 0.04);
+    let timerL = null, timerR = null;
+
+    const moveLeft  = () => { html.scrollLeft = Math.max(0, html.scrollLeft - STEP_X()); };
+    const moveRight = () => { html.scrollLeft += STEP_X(); };
+    function jump() {
+      const base = html.scrollTop;
+      html.scrollTop = base + STEP_Y;
+      setTimeout(() => { html.scrollTop = base; }, 380);
+    }
+
+    const press   = id => document.getElementById(id).classList.add('pressed');
+    const release = id => document.getElementById(id).classList.remove('pressed');
+    function startL() { document.body.focus(); moveLeft();  timerL = setInterval(moveLeft,  TICK); press('btnLeft'); }
+    function stopL()  { clearInterval(timerL); timerL = null; release('btnLeft'); }
+    function startR() { document.body.focus(); moveRight(); timerR = setInterval(moveRight, TICK); press('btnRight'); }
+    function stopR()  { clearInterval(timerR); timerR = null; release('btnRight'); }
+    function doJump() { document.body.focus(); jump(); press('btnJump'); setTimeout(() => release('btnJump'), 200); }
+
+    function bind(id, onStart, onEnd) {
+      const el = document.getElementById(id);
+      el.addEventListener('touchstart',  e => { e.preventDefault(); onStart(); }, { passive: false });
+      el.addEventListener('touchend',    e => { e.preventDefault(); if (onEnd) onEnd(); }, { passive: false });
+      el.addEventListener('touchcancel', e => { e.preventDefault(); if (onEnd) onEnd(); }, { passive: false });
+      el.addEventListener('mousedown',   () => onStart());
+      el.addEventListener('mouseup',     () => { if (onEnd) onEnd(); });
+      el.addEventListener('mouseleave',  () => { if (onEnd) onEnd(); });
+    }
+    bind('btnLeft',  startL, stopL);
+    bind('btnRight', startR, stopR);
+    bind('btnJump',  doJump, null);
+
+    const held = {};
+    document.addEventListener('keydown', e => {
+      if (held[e.key]) return; held[e.key] = true;
+      if (e.key === 'ArrowLeft')  startL();
+      if (e.key === 'ArrowRight') startR();
+      if (e.key === 'ArrowDown')  doJump();
+    });
+    document.addEventListener('keyup', e => {
+      held[e.key] = false;
+      if (e.key === 'ArrowLeft')  stopL();
+      if (e.key === 'ArrowRight') stopR();
+    });
+
+    // ── Meta ──
+    // La posición de la meta en pantalla se calcula igual que la posición de Mario,
+    // pero relativa al final del mundo en vez de la posición actual.
+    //
+    // Mario en el mundo (px): marioWorld = scrollLeft  (el scroll ES la posición de Mario)
+    // Meta en el mundo (px):  metaWorld  = maxScroll   (al final del scroll)
+    // Diferencia: metaWorld - marioWorld = maxScroll - scrollLeft
+    //
+    // En pantalla, Mario está en: x0 * (clientW - 50px)  [según el CSS]
+    // Cada px de mundo = (clientW - 50) / maxScroll px de pantalla  ... NO, no es lineal así.
+    //
+    // Enfoque directo: la meta está a (maxScroll - scrollLeft) px de scroll a la derecha.
+    // En términos de pantalla eso equivale a (maxScroll - scrollLeft) / maxScroll pantallas extra.
+    // La meta en pantalla = marioScreenX + (maxScroll - scrollLeft) / maxScroll * (clientW - 50)
+    //   donde marioScreenX = x0 * (clientW - 50)
+    //   y x0 = scrollLeft / maxScroll
+    // → metaScreen = (scrollLeft/maxScroll)*(clientW-50) + (1 - scrollLeft/maxScroll)*(clientW-50)
+    // → metaScreen = (clientW - 50)   ← siempre igual! Eso es porque Mario llena el rango completo.
+    //
+    // El truco es que Mario en pantalla va de 0 a clientW-50 mientras el mundo va de 0 a maxScroll.
+    // La meta está en el mundo en maxScroll. Su posición en pantalla relativa a Mario es:
+    // metaScreen = marioScreen + (metaWorld - marioWorld) * (screenRange / worldRange)
+    //            = x0*(cW-50) + (maxScroll - scrollLeft) * (cW-50) / maxScroll
+    //            = (cW-50) * [x0 + (1-x0)] = cW-50   ← siempre!
+    //
+    // Conclusión: con este CSS, la meta SIEMPRE aparece en la misma posición de pantalla
+    // porque Mario siempre está a la misma proporción de la pantalla.
+    // La única forma correcta es poner la meta FUERA del rango de Mario, más a la derecha.
+    // Usamos: metaScreen = clientW + (1-x0) * clientW * EXTRA
+    // donde EXTRA hace que la meta entre a pantalla solo cuando x0 se acerca a 1.
+
+    const pole = document.getElementById('finish-pole');
+    const flag = document.getElementById('finish-flag');
+
+    function getX0() {
+      return parseFloat(getComputedStyle(html).getPropertyValue('--x0')) || 0;
+    }
+
+    function updateMeta() {
+      const maxScroll = html.scrollWidth - html.clientWidth;
+      const scrollLeft = html.scrollLeft;
+      const cW = html.clientWidth;
+
+      if (maxScroll > 0) {
+        // La meta siempre visible: ocupa el borde derecho de la pantalla
+        // y tiene un indicador de progreso encima.
+        // La barra está SIEMPRE en el borde derecho (fixed, right:0).
+        // El indicador de qué tan lejos está se muestra en el palo.
+        // Cuando scrollLeft=maxScroll la barra "llegó" → activar victoria.
+        const progress = scrollLeft / maxScroll; // 0→1
+        // La barra está fija a la derecha, pero el palo se hace más brillante/grande al acercarse
+        pole.style.opacity = 0.3 + progress * 0.7;
+        flag.style.opacity = 0.3 + progress * 0.7;
+        if (progress > 0.85) pole.classList.add('near');
+        else pole.classList.remove('near');
+        // Actualizar texto de progreso
+        const pct = Math.round(progress * 100);
+        document.getElementById('meta-progress').textContent = pct + '% →';
+      }
+
+      requestAnimationFrame(updateMeta);
+    }
+    updateMeta();
+
+    // ── Confeti ──
+    const confettiCanvas = document.getElementById('win-confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let particles = [], confettiRunning = false;
+    function resizeConfetti() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    resizeConfetti();
+    window.addEventListener('resize', resizeConfetti);
+    const COLORS = ['#ff4444','#ffdd00','#44ff88','#44aaff','#ff44cc','#ffaa00','#ffffff'];
+    function spawnParticles() {
+      particles = Array.from({length:120}, () => ({
+        x: Math.random()*confettiCanvas.width, y: -10-Math.random()*200,
+        w: 8+Math.random()*8, h: 4+Math.random()*6,
+        color: COLORS[Math.floor(Math.random()*COLORS.length)],
+        vx: (Math.random()-.5)*4, vy: 2+Math.random()*4,
+        rot: Math.random()*Math.PI*2, rotV: (Math.random()-.5)*.2,
+      }));
+    }
+    function animateConfetti() {
+      if (!confettiRunning) return;
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      particles.forEach(p => {
+        p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotV; p.vy+=.08;
+        confettiCtx.save();
+        confettiCtx.translate(p.x,p.y); confettiCtx.rotate(p.rot);
+        confettiCtx.fillStyle=p.color;
+        confettiCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        confettiCtx.restore();
+      });
+      particles = particles.map(p => p.y>confettiCanvas.height+20
+        ? {...p, x:Math.random()*confettiCanvas.width, y:-10, vy:2+Math.random()*3}
+        : p);
+      requestAnimationFrame(animateConfetti);
+    }
+
+    // ── Victoria ──
+    const winScreen = document.getElementById('win-screen');
+    let won = false;
+    function triggerWin() {
+      if (won) return;
+      won = true;
+      clearInterval(timerL); clearInterval(timerR);
+      timerL = timerR = null;
+      winScreen.classList.add('show');
+      requestAnimationFrame(() => requestAnimationFrame(() => winScreen.classList.add('visible')));
+      confettiRunning = true;
+      spawnParticles();
+      animateConfetti();
+    }
+    function checkWinLoop() {
+      if (!won && getX0() >= 0.99) triggerWin();
+      if (!won) requestAnimationFrame(checkWinLoop);
+    }
+    checkWinLoop();
+    function closeWin() {
+      winScreen.classList.remove('visible');
+      setTimeout(() => winScreen.classList.remove('show'), 600);
+      confettiRunning = false;
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    }
+    winScreen.addEventListener('click', closeWin);
+    winScreen.addEventListener('touchend', e => { e.preventDefault(); closeWin(); });
+  </script>
+</body>
+</html>
